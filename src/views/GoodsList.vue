@@ -1,25 +1,27 @@
 <template>
 	<div>
   <nav-header></nav-header>
-
   <nav-bread>
-    <span>Goods</span>
+    <span>商品</span>
   </nav-bread>
-
   <div class="accessory-result-page accessory-page">
     <div class="container">
       <div class="filter-nav">
-        <span class="sortby">Sort by:</span>
-        <a href="javascript:void(0)" class="default cur">Default</a>
-        <a href="javascript:void(0)" class="price" @click="sortGoods">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-        <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
+        <span class="sortby">排序 &nbsp:</span>
+        <a href="javascript:void(0)" class="default cur">默认</a>
+        <a href="javascript:void(0)" class="price" @click="sortGoods">价格
+          <svg class="icon icon-arrow-short" v-bind:class="{'sort-up':!sortFlag}">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-short"></use>
+          </svg>
+        </a>
+        <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">筛选</a>
       </div>
       <div class="accessory-result">
         <!-- filter -->
         <div class="filter stopPop" id="filter" v-bind:class="{'filterby-show':filterBy}">
           <dl class="filter-price">
-            <dt>Price:</dt>
-            <dd><a href="javascript:void(0)" @click="priceChecked='all'" v-bind:class="{'cur':priceChecked=='all'}">All</a></dd>
+            <dt>价格区间</dt>
+            <dd><a href="javascript:void(0)" @click="setPriceFilter('all')" v-bind:class="{'cur':priceChecked=='all'}">所有</a></dd>
             <dd v-for="(price,index) in priceFilter">
               <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
             </dd>
@@ -50,6 +52,26 @@
       </div>
     </div>
   </div>
+  <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
+    <p slot="message">
+      请先登录，否则无法加入购物车
+    </p>
+    <div slot="btnGroup">
+      <a class="btn btn--m" href="javascript:;" @click="closeModal">关闭</a>
+    </div>
+  </modal>
+  <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
+    <p slot="message">
+      <svg class="icon-status-ok">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+      </svg>
+      <span>加入购物车成功</span>
+    </p>
+    <div slot="btnGroup">
+      <a class="btn btn--m" href="javascript:;" @click="mdShowCart=false">继续购物</a>
+      <router-link class="btn btn--m" href="javascript:;" to="/cart">查看购物车</router-link>
+    </div>
+  </modal>
   <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
   <nav-footer></nav-footer>
 	</div>
@@ -61,6 +83,7 @@
   import NavHeader from '../components/NavHeader.vue'
   import NavFooter from '@/components/NavFooter'
   import NavBread from '@/components/NavBread'
+  import Modal from '@/components/Modal'
   import axios from 'axios'
   export default {
 
@@ -95,7 +118,9 @@
           pageSize:8,
           busy:true,
           priceLevel:this.priceChecked,
-          loading:false
+          loading:false,
+          mdShow:false,
+          mdShowCart:false
       }
     },
     mounted() {
@@ -104,7 +129,8 @@
     components: {
       NavHeader,
       NavFooter,
-      NavBread
+      NavBread,
+      Modal
     }, 
     methods: {
       showFilterPop () {
@@ -123,7 +149,7 @@
             priceLevel:this.priceChecked
         }
         this.loading = true;
-        axios.get("/goods", {
+        axios.get("/goods/list", {
           params:param
         }).then((response)=>{
           let res = response.data;
@@ -168,15 +194,15 @@
           productId:productId
         }).then((res)=>{
           if(res.data.status == 0){
-              alert("加入成功");
+            this.mdShowCart = true;
           }else {
-            alert("mag:"+res.data.msg);
+            this.mdShow = true;
           }
         });
+      },
+      closeModal () {
+        this.mdShow = false;
       }
     }
   }
 </script>
-
-<style lang="css" scoped>
-</style>
