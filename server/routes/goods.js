@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Goods = require('../models/goods');
 
 //使用mongoose连接数据库
-mongoose.connect('mongodb://localhost:27017/dumall');
+mongoose.connect('mongodb://localhost:27017/mall');
 
 mongoose.connection.on("connected", function () {
 	console.log('MongoDB connected success.');
@@ -81,7 +81,6 @@ router.post("/addCart", function (req,res,next) {
 				msg:err.message
 			})
 		}else {
-			console.log('userDoc'+userDoc);
 			if (userDoc) {
 				let goodsItem = '';
 				userDoc.cartList.forEach(function (item) {

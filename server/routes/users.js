@@ -14,7 +14,6 @@ router.get('/test', function (req, res, next) {
 
 // 登录接口
 router.post("/login", function (req,res,next) {
-  console.log('收到');
   var param = {
       userName:req.body.userName,
       userPwd:req.body.userPwd
