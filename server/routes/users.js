@@ -313,8 +313,8 @@ router.post("/delAddress", function (req,res,next) {
 
 router.post("/payMent", function (req,res,next) {
   var userId = req.cookies.userId,
-    addressId = req.body.addressId,
-    orderTotal = req.body.orderTotal;
+      addressId = req.body.addressId,
+      orderTotal = req.body.orderTotal;
   User.findOne({userId:userId}, function (err,doc) {
      if(err){
         res.json({

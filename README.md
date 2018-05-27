@@ -4,6 +4,38 @@
 
 ## Build Setup
 
+项目树结构：
+
+├─.idea
+│  └─inspectionProfiles
+├─build
+├─config
+├─demo-server
+├─resource
+│  ├─img
+│  ├─loading
+│  └─views
+│      └─css
+├─server
+│  ├─bin
+│  ├─models
+│  ├─public
+│  │  ├─images
+│  │  ├─javascripts
+│  │  └─stylesheets
+│  ├─routes
+│  ├─util
+│  └─views
+├─src
+│  ├─assets
+│  │  └─css
+│  ├─components
+│  ├─router
+│  ├─util
+│  └─views
+└─static
+    └─loading-svg
+
 ``` bash
 # install dependencies
 npm install

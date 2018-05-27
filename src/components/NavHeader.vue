@@ -32,7 +32,7 @@
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">登录</a>
           <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-if="nickName">注销</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count"></span>
+            <span class="navbar-cart-count" v-if="cartCount > 0">{{cartCount}}</span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
               <svg class="navbar-cart-logo">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -85,22 +85,21 @@ export default {
         userName:'',
         userPwd:'',
         errorTip:false,
-        loginModalFlag:false,
-        nickName:''
+        loginModalFlag:false
     }
   },
   mounted () {
     this.checkLogin();
   },
-  methods: {
-    checkLogin () {
-        axios.get('/users/checkLogin').then((response)=>{
-          let res = response.data;
-          if (res.status == '0') {
-            this.nickName = res.result;
-          }
-        })
+  computed: {
+    nickName () {
+      return this.$store.state.nickName;
     },
+    cartCount () {
+      return this.$store.state.cartCount;
+    }
+  },
+  methods: {
     login () {
         if (!this.userName || !this.userPwd) {
            this.errorTip = true;
@@ -109,13 +108,13 @@ export default {
         axios.post("/users/login",{
           userName:this.userName,
           userPwd:this.userPwd
-        }).then((res)=>{
-          console.log(res.data.result.userName);
-          // let res = response.data;
-          if (res.data.status == 0) {
+        }).then((response)=>{
+          let res = response.data;
+          if (res.status == 0) {
             this.errorTip = false;
             this.loginModalFlag = false;
-            this.nickName = res.data.result.userName;
+            this.$store.commit('updateUserInfo', res.result.userName);
+            this.getCartCount();
           }else {
             this.errorTip = true;
           }
@@ -125,9 +124,27 @@ export default {
       axios.post('users/logout').then((response)=>{
           let res = response.data;
           if (res.status == 0) {
-            this.nickName = '';
+            this.$store.commit('updateUserInfo','');
+            this.$store.commit('updateCartCount', -this.cartCount)
           }
       })
+    },
+    checkLogin () {
+        axios.get('/users/checkLogin').then((response)=>{
+          let res = response.data;
+          if (res.status == '0') {
+            this.$store.commit('updateUserInfo', res.result);
+            this.getCartCount();
+          }
+        })
+    },
+    getCartCount () {
+      axios.get('users/getCartCount').then((response)=>{
+        let res = response.data;
+        if (res.status == '0') {
+          this.$store.commit('initCartCount',res.result);
+        }     
+      });
     }
   }
 }

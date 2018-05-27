@@ -123,7 +123,7 @@
 		          <button class="btn btn--m">Previous</button>
 		        </div>
 		        <div class="next-btn-wrap">
-		          <button class="btn btn--m btn--red" @click="payMent">Proceed to payment</button>
+		          <button class="btn btn--m btn--red" @click="payMent">立即支付</button>
 		        </div>
 		      </div>
 		    </div>
@@ -186,7 +186,7 @@
 	  		}).then((response)=>{
 	  			let res = response.data;
 	  			if (res.status == 0) {
-	  				this.$route.push({
+	  				this.$router.push({
 	  					path:'/orderSuccess?orderId='+res.result.orderId
 	  				});
 	  			}
