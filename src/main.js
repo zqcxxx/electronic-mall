@@ -38,9 +38,6 @@ const store = new Vuex.Store({
 		initCartCount (state, cartCount) {
 			state.cartCount = cartCount;
 		},
-		finshCartCount (state, cartCount) {
-			state.cartCount = 0;
-		}
 	}
 });
 /* eslint-disable no-new */
